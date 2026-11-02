@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab Exercise 2 — XMLHttpRequest</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h2>Exploring XMLHttpRequest</h2>
+
+    <button id="loadData">Load Post Data</button>
+
+    <div id="output">
+        Click the button above to load content...
+    </div>
+
+    <script>
+        // Reference
+        const loadBtn = document.getElementById('loadData');
+        const outputDiv = document.getElementById('output');
+        const apiEndpoint = 'https://jsonplaceholder.typicode.com/posts/1';
+
+        // Click event
+        loadBtn.addEventListener('click', fetchPost);
+
+        function fetchPost() {
+            const xhr = new XMLHttpRequest();
+
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        try {
+                            const postData = JSON.parse(xhr.responseText);
+                            outputDiv.innerHTML = `
+                                <strong>Post Title:</strong><br>
+                                ${postData.title}
+                                <br><br>
+                                <strong>Post Body:</strong><br>
+                                ${postData.body}
+                            `;
+                        } catch (err) {
+                            outputDiv.innerHTML = `<span class="error-text">Failed to parse server response.</span>`;
+                        }
+                    } else {
+                        outputDiv.innerHTML = `<span class="error-text">
+                            Request failed — Status ${xhr.status}: ${xhr.statusText}
+                        </span>`;
+                    }
+                }
+            };
+
+            xhr.open('GET', apiEndpoint, true);
+            xhr.send();
+        }
+    </script>
+</body>
+</html>
